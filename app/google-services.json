@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "545250186659",
+    "project_id": "repy-f9322",
+    "storage_bucket": "repy-f9322.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545250186659:android:7e61bf80f55cffa8cf7616",
+        "android_client_info": {
+          "package_name": "com.example.repy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkh4GG1euNCl5XpgKP7ZpoiocePJxp27c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

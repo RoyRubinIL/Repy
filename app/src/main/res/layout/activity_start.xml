@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue"
+    tools:context=".Views.StartActivity">
+
+    <!-- App Logo -->
+    <ImageView
+        android:id="@+id/app_logo"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="60dp"
+        android:contentDescription="App Logo"
+        android:src="@drawable/ic_logo"
+        android:layout_centerHorizontal="true"/>
+
+    <!-- Log In Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/app_logo"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:text="Log In"
+        android:textColor="@color/light_blue"
+        app:backgroundTint="@color/white"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:elevation="4dp" />
+
+    <!-- Sign Up Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/signup_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_button"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        android:text="Sign Up"
+        android:textColor="@color/light_blue"
+        app:backgroundTint="@color/white"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:elevation="4dp" />
+
+</RelativeLayout>

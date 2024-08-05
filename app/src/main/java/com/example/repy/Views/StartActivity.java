@@ -1,19 +1,20 @@
 package com.example.repy.Views;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.repy.R;
+import com.google.android.material.button.MaterialButton;
 
-public class MainActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity {
+
+    private MaterialButton loginButton;
+    private MaterialButton signupButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,19 @@ public class MainActivity extends AppCompatActivity {
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_start);
 
+        loginButton = findViewById(R.id.login_button);
+        signupButton = findViewById(R.id.signup_button);
+
+        loginButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
+
+        signupButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StartActivity.this, SignupActivity.class);
+            startActivity(intent);
+        });
     }
 }

@@ -262,10 +262,66 @@ public class SignupActivity extends AppCompatActivity {
             String email = signUpEmail.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
             String name = signUpName.getText().toString().trim();
-            int streetNum = Integer.parseInt(signUpAddressStreetNum.getText().toString().trim());
+            String streetNumStr = signUpAddressStreetNum.getText().toString().trim();
             String street = signUpAddressStreet.getText().toString().trim();
             String countryName = countrySpinner.getSelectedItem().toString();
             String cityName = citySpinner.getSelectedItem().toString();
+
+            boolean isValid = true;
+
+            if (userID.isEmpty()) {
+                signUpId.setError("ID is required");
+                isValid = false;
+            }
+
+            if (email.isEmpty()) {
+                signUpEmail.setError("Email is required");
+                isValid = false;
+            }
+
+            if (password.isEmpty()) {
+                passwordEditText.setError("Password is required");
+                isValid = false;
+            }
+
+            if (name.isEmpty()) {
+                signUpName.setError("Name is required");
+                isValid = false;
+            }
+
+            int streetNum = 0;
+            if (streetNumStr.isEmpty()) {
+                signUpAddressStreetNum.setError("Street number is required");
+                isValid = false;
+            } else {
+                try {
+                    streetNum = Integer.parseInt(streetNumStr);
+                } catch (NumberFormatException e) {
+                    signUpAddressStreetNum.setError("Invalid street number");
+                    isValid = false;
+                }
+            }
+
+            if (street.isEmpty()) {
+                signUpAddressStreet.setError("Street is required");
+                isValid = false;
+            }
+
+            if ("Select Country".equals(countryName)) {
+                TextView errorText = (TextView) countrySpinner.getSelectedView();
+                errorText.setError("Country is required");
+                isValid = false;
+            }
+
+            if ("Select City".equals(cityName)) {
+                TextView errorText = (TextView) citySpinner.getSelectedView();
+                errorText.setError("City is required");
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
 
             Country selectedCountry = null;
             for (Country country : countryList) {
@@ -297,9 +353,18 @@ public class SignupActivity extends AppCompatActivity {
             Toast.makeText(this, "User created successfully!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
             startActivity(intent);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().contains("Password")) {
+                passwordEditText.setError(e.getMessage());
+            } else {
+                Log.e(TAG, "Error creating user: " + e.getMessage());
+                Toast.makeText(this, "Error creating user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error creating user: " + e.getMessage());
             Toast.makeText(this, "Error creating user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
+
 }

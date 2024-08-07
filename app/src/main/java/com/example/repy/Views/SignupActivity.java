@@ -31,6 +31,7 @@ import com.example.repy.Network.ApiService;
 import com.example.repy.Models.CountryFlagResponse;
 import com.example.repy.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -50,9 +51,8 @@ public class SignupActivity extends AppCompatActivity {
     private Spinner countrySpinner, citySpinner;
     private EditText passwordEditText, signUpEmail, signUpAddressStreetNum, signUpAddressStreet, signUpId, signUpName;
     private ImageButton showPasswordButton;
-    private MaterialButton signUpButton;
+    private MaterialButton signUpButton, addProfileImage;
     private TextView loginRedirectText;
-    private ImageButton addProfileImage;
     private TextView countryFlagTextView;
     private ApiService apiService;
     private boolean isPasswordVisible = false;
@@ -138,7 +138,8 @@ public class SignupActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                addProfileImage.setImageBitmap(bitmap);
+                ShapeableImageView profileImageView = findViewById(R.id.profile_IMG_avatar);
+                profileImageView.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -365,6 +366,4 @@ public class SignupActivity extends AppCompatActivity {
             Toast.makeText(this, "Error creating user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
-
 }

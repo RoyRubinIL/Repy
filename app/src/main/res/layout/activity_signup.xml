@@ -49,34 +49,44 @@
                         android:textColor="@color/light_blue"/>
 
                     <!-- Profile Image Section -->
-                    <LinearLayout
+                    <FrameLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center"
                         android:layout_marginTop="20dp">
 
-                        <ImageButton
-                            android:id="@+id/add_profile_image"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:background="@color/white"
-                            android:src="@drawable/ic_person"
-                            android:contentDescription="Add Profile Image"
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/profile_IMG_avatar"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
                             android:layout_gravity="center"
+                            app:shapeAppearanceOverlay="@style/circleImageView"
                             android:scaleType="centerCrop"
-                            android:layout_margin="16dp" />
-                    </LinearLayout>
+                            app:srcCompat="@drawable/ic_person" />
 
-                    <!-- Profile Image Text -->
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/add_image_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Add Image"
-                        android:textSize="16sp"
-                        android:layout_gravity="center"
-                        android:textColor="@color/light_blue"/>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/add_profile_image"
+                            style="@style/Widget.Material3.Button.Icon"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_marginBottom="12dp"
+                            android:layout_marginEnd="50dp"
+                            android:layout_gravity="bottom|end"
+                            android:backgroundTint="@color/light_blue"
+                            android:elevation="13dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            app:icon="@drawable/ic_edit"
+                            app:iconGravity="textEnd"
+                            app:iconSize="24dp"
+                            app:iconTint="@color/black"
+                            app:rippleColor="#80808080" />
+                    </FrameLayout>
+
+
+
 
                     <!-- Input Fields -->
                     <EditText
@@ -88,7 +98,8 @@
                         android:hint="ID"
                         android:drawablePadding="8dp"
                         android:textColor="@color/black"
-                        android:textColorHint="@color/gray"/>
+                        android:textColorHint="@color/gray"
+                        android:background="@color/white"/>
 
                     <EditText
                         android:layout_width="match_parent"
@@ -99,7 +110,8 @@
                         android:hint="Name"
                         android:drawablePadding="8dp"
                         android:textColor="@color/black"
-                        android:textColorHint="@color/gray"/>
+                        android:textColorHint="@color/gray"
+                        android:background="@color/white"/>
 
                     <!-- Country and City Selection -->
                     <LinearLayout
@@ -120,7 +132,8 @@
                                 android:layout_height="50dp"
                                 android:layout_weight="1"
                                 android:padding="12dp"
-                                android:spinnerMode="dropdown"/>
+                                android:spinnerMode="dropdown"
+                                android:background="@color/white"/>
 
                             <TextView
                                 android:id="@+id/country_flag_text"
@@ -138,7 +151,8 @@
                             android:layout_height="50dp"
                             android:padding="12dp"
                             android:spinnerMode="dropdown"
-                            android:layout_marginTop="10dp"/>
+                            android:layout_marginTop="10dp"
+                            android:background="@color/white"/>
                     </LinearLayout>
 
                     <EditText
@@ -150,7 +164,8 @@
                         android:hint="Street"
                         android:drawablePadding="8dp"
                         android:textColor="@color/black"
-                        android:textColorHint="@color/gray"/>
+                        android:textColorHint="@color/gray"
+                        android:background="@color/white"/>
 
                     <EditText
                         android:layout_width="match_parent"
@@ -162,7 +177,8 @@
                         android:drawablePadding="8dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/gray"
-                        android:inputType="number"/>
+                        android:inputType="number"
+                        android:background="@color/white"/>
 
                     <EditText
                         android:layout_width="match_parent"
@@ -174,7 +190,8 @@
                         android:inputType="textEmailAddress"
                         android:drawablePadding="8dp"
                         android:textColor="@color/black"
-                        android:textColorHint="@color/gray"/>
+                        android:textColorHint="@color/gray"
+                        android:background="@color/white"/>
 
                     <!-- Password Section with Show/Hide Icon -->
                     <LinearLayout
@@ -194,7 +211,8 @@
                             android:inputType="textPassword"
                             android:drawablePadding="8dp"
                             android:textColor="@color/black"
-                            android:textColorHint="@color/gray"/>
+                            android:textColorHint="@color/gray"
+                            android:background="@color/white"/>
 
                         <ImageButton
                             android:id="@+id/show_password_button"

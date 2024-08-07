@@ -9,93 +9,152 @@
     android:background="@color/light_blue"
     tools:context=".Views.MenuActivity">
 
-<!--    &lt;!&ndash; User Profile Section &ndash;&gt;-->
-<!--    <ImageView-->
-<!--        android:id="@+id/user_picture"-->
-<!--        android:layout_width="100dp"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="30dp"-->
-<!--        android:src="@drawable/user_picture" />-->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profile_IMG_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_person" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/hello_user"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/user_picture"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:text="Hello, [User Name]"-->
-<!--        android:textSize="18sp"-->
-<!--        android:textColor="@color/black" />-->
+    <TextView
+        android:id="@+id/hello_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_IMG_avatar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Hello, [User Name]"
+        android:textSize="18sp"
+        android:textColor="@color/black" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/cancel_report_prompt"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/hello_user"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:text="Ready to cancel your report?"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textColor="@color/black" />-->
+    <TextView
+        android:id="@+id/cancel_report_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hello_user"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Ready to cancel your ticket?"
+        android:textSize="16sp"
+        android:textColor="@color/black" />
 
-<!--    &lt;!&ndash; Buttons Section &ndash;&gt;-->
-<!--    <GridLayout-->
-<!--        android:id="@+id/button_grid"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/cancel_report_prompt"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="30dp"-->
-<!--        android:columnCount="2"-->
-<!--        android:rowCount="2"-->
-<!--        android:orientation="horizontal">-->
+    <!-- Buttons Section -->
+    <GridLayout
+        android:id="@+id/button_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cancel_report_prompt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:orientation="horizontal">
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_generate_appeal"-->
-<!--            android:layout_width="120dp"-->
-<!--            android:layout_height="120dp"-->
-<!--            android:layout_margin="20dp"-->
-<!--            android:src="@drawable/ic_generate_appeal"-->
-<!--            android:contentDescription="@string/generate_appeal" />-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_generate_appeal"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_manage_profile"-->
-<!--            android:layout_width="120dp"-->
-<!--            android:layout_height="120dp"-->
-<!--            android:layout_margin="20dp"-->
-<!--            android:src="@drawable/ic_manage_profile"-->
-<!--            android:contentDescription="@string/manage_profile" />-->
+            <TextView
+                android:id="@+id/txt_generate_appeal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Generate Appeal"
+                android:textColor="@color/light_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </androidx.cardview.widget.CardView>
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_appeals_history"-->
-<!--            android:layout_width="120dp"-->
-<!--            android:layout_height="120dp"-->
-<!--            android:layout_margin="20dp"-->
-<!--            android:src="@drawable/ic_appeals_history"-->
-<!--            android:contentDescription="@string/appeals_history" />-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_manage_profile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
 
-<!--        <ImageButton-->
-<!--            android:id="@+id/btn_monitor_appeals"-->
-<!--            android:layout_width="120dp"-->
-<!--            android:layout_height="120dp"-->
-<!--            android:layout_margin="20dp"-->
-<!--            android:src="@drawable/ic_monitor_appeals"-->
-<!--            android:contentDescription="@string/monitor_appeals" />-->
-<!--    </GridLayout>-->
+            <TextView
+                android:id="@+id/txt_manage_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Manage Profile"
+                android:textColor="@color/light_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </androidx.cardview.widget.CardView>
 
-<!--    &lt;!&ndash; Logout Button &ndash;&gt;-->
-<!--    <Button-->
-<!--        android:id="@+id/btn_logout"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginBottom="30dp"-->
-<!--        android:text="Logout"-->
-<!--        android:textSize="16sp"-->
-<!--        android:backgroundTint="@color/white"-->
-<!--        android:textColor="@color/light_blue" />-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_appeals_history"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <TextView
+                android:id="@+id/txt_appeals_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Appeals History"
+                android:textColor="@color/light_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_monitor_appeals"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="10dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <TextView
+                android:id="@+id/txt_monitor_appeals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Monitor Appeals"
+                android:textColor="@color/light_blue"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+        </androidx.cardview.widget.CardView>
+    </GridLayout>
+
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:text="Logout"
+        android:textSize="16sp"
+        android:backgroundTint="@color/white"
+        android:textColor="@color/light_blue"
+        android:textStyle="bold"/>
 
 </RelativeLayout>

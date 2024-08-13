@@ -2,31 +2,25 @@ package com.example.repy.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.repy.R;
+import com.example.repy.Utilities.UserManager;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
-    private EditText passwordEditText, emailLogIn;
-    private ImageButton showPasswordButton;
+
     private MaterialButton logInButton;
     private TextView signUpRedirectText;
-    private boolean isPasswordVisible = false;
+    private EditText emailField, passwordField;
+    private UserManager userManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,74 +38,50 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         initializeViews();
+        userManager = new UserManager();
 
-        showPasswordButton.setOnClickListener(v -> togglePasswordVisibility());
-        logInButton.setOnClickListener(v -> userLogIn(emailLogIn.getText().toString().trim(), passwordEditText.getText().toString().trim()));
+        logInButton.setOnClickListener(v -> login());
         signUpRedirectText.setOnClickListener(v -> redirectToSignup());
     }
 
     private void initializeViews() {
-        passwordEditText = findViewById(R.id.login_password);
-        emailLogIn = findViewById(R.id.login_email);
-        showPasswordButton = findViewById(R.id.show_password_button);
         logInButton = findViewById(R.id.logIn_button);
         signUpRedirectText = findViewById(R.id.signUpRedirectText);
+        emailField = findViewById(R.id.login_EDT_email);
+        passwordField = findViewById(R.id.login_EDT_password);
+    }
+
+    private void login() {
+        String email = emailField.getText().toString().trim();
+        String password = passwordField.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            emailField.setError("Email is required");
+            return;
+        }
+        if (password.isEmpty()) {
+            passwordField.setError("Password is required");
+            return;
+        }
+
+        userManager.loginUser(email, password, this, new UserManager.OnLoginListener() {
+            @Override
+            public void onLoginSuccess(String uid) {
+                Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onLoginFailure(Exception e) {
+                Toast.makeText(LoginActivity.this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void redirectToSignup() {
         Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
         startActivity(intent);
-    }
-
-    private void togglePasswordVisibility() {
-        if (isPasswordVisible) {
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            showPasswordButton.setImageResource(R.drawable.ic_show_pass);
-        } else {
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-            showPasswordButton.setImageResource(R.drawable.ic_hide_pass);
-        }
-        passwordEditText.setSelection(passwordEditText.getText().length());
-        isPasswordVisible = !isPasswordVisible;
-    }
-
-    private void userLogIn(String email, String password) {
-        if (email.isEmpty()) {
-            emailLogIn.setError("Email cannot be empty");
-            return;
-        }
-
-        if (password.isEmpty()) {
-            passwordEditText.setError("Password cannot be empty");
-            return;
-        }
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        reference.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        String storedPassword = userSnapshot.child("password").getValue(String.class);
-                        if (storedPassword != null && storedPassword.equals(password)) {
-                            Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                            // Redirect to the main activity or dashboard
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Invalid password", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                } else {
-                    Toast.makeText(LoginActivity.this, "User not found", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(LoginActivity.this, "Database error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 }

@@ -1,23 +1,33 @@
 package com.example.repy.Models;
 
-import java.text.DateFormat;
+import java.util.Date;
 
 public class Appeal {
+    private String uid;
     private String id;
-    private Ticket ticket;
-    private DateFormat date;
+    private String ticketId;
+    private Date date = new Date();
     private AppealStatus status;
     private String reason;
+    private String pdfUrl;
 
-    public Appeal(String id, Ticket ticket, AppealStatus status, String reason, DateFormat date) {
+    public Appeal(String uid, String id, String ticketId, String reason) {
+        this.uid = uid;
         this.id = id;
-        this.ticket = ticket;
-        this.status = status;
-        this.date = date;
+        this.ticketId = ticketId;
+        this.status = AppealStatus.ACTIVE;
         setReason(reason);
     }
 
     public Appeal() {
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getId() {
@@ -28,20 +38,20 @@ public class Appeal {
         this.id = id;
     }
 
-    public DateFormat getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(DateFormat date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public Ticket getTicket() {  // Correct the method name
-        return ticket;
+    public String getTicketId() {  // Corrected method name
+        return ticketId;
     }
 
-    public void setTicket(Ticket ticket) {  // Correct the method name
-        this.ticket = ticket;
+    public void setTicketId(String ticketId) {  // Corrected method name
+        this.ticketId = ticketId;
     }
 
     public AppealStatus getStatus() {
@@ -64,12 +74,20 @@ public class Appeal {
         }
     }
 
+    public String getPdfUrl() {
+        return pdfUrl;
+    }
+
+    public void setPdfUrl(String pdfUrl) {
+        this.pdfUrl = pdfUrl;
+    }
+
     @Override
     public String toString() {
         return "Appeal{" +
                 "id='" + id + '\'' +
-                ", date= " + date +
-                ", ticket=" + ticket +
+                ", date=" + date +
+                ", ticket=" + ticketId +
                 ", status=" + status +
                 ", reason='" + reason + '\'' +
                 '}';

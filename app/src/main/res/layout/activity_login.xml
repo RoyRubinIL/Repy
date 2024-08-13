@@ -39,45 +39,44 @@
                 android:padding="24dp"
                 android:background="@color/white">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:id="@+id/login_email"
-                    android:layout_marginTop="20dp"
-                    android:padding="12dp"
-                    android:hint="Email"
-                    android:drawablePadding="8dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/gray" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    app:placeholderText="name@mail.com"
+                    android:hint="email">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_EDT_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Password Section with Show/Hide Icon -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginTop="20dp">
 
-                    <EditText
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:id="@+id/login_password"
-                        android:layout_weight="1"
-                        android:padding="12dp"
-                        android:hint="Password"
-                        android:inputType="textPassword"
-                        android:drawablePadding="8dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/gray" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        app:endIconMode="password_toggle"
+                        android:hint="password">
 
-                    <ImageButton
-                        android:id="@+id/show_password_button"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:padding="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_show_pass"
-                        android:contentDescription="Show Password" />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/login_EDT_password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPassword"
+                            />
+
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
                 <!-- Sign Up Button -->

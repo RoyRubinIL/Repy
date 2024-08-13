@@ -11,14 +11,19 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/profile_IMG_avatar"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="30dp"
+        android:background="@color/white"
+        android:scaleType="fitCenter"
         app:shapeAppearanceOverlay="@style/circleImageView"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_person" />
+        app:srcCompat="@drawable/img_default_profile_image"
+        app:strokeColor="@color/deep_blue"
+        app:strokeWidth="4dp"
+        android:padding="8dp"/>
+
 
     <TextView
         android:id="@+id/hello_user"
@@ -28,8 +33,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Hello, [User Name]"
-        android:textSize="18sp"
-        android:textColor="@color/black" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/cancel_report_prompt"
@@ -39,8 +45,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Ready to cancel your ticket?"
-        android:textSize="16sp"
-        android:textColor="@color/black" />
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/white" />
 
     <!-- Buttons Section -->
     <GridLayout
@@ -72,7 +79,7 @@
                 android:padding="16dp"
                 android:text="Generate Appeal"
                 android:textColor="@color/light_blue"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
         </androidx.cardview.widget.CardView>
 
@@ -86,16 +93,18 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/txt_manage_profile"
+                android:id="@+id/txt_monitor_appeals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="Manage Profile"
+                android:text="Monitor Appeals"
                 android:textColor="@color/light_blue"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
+
+
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -116,7 +125,7 @@
                 android:padding="16dp"
                 android:text="Appeals History"
                 android:textColor="@color/light_blue"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
         </androidx.cardview.widget.CardView>
 
@@ -130,21 +139,22 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/txt_monitor_appeals"
+                android:id="@+id/txt_manage_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="Monitor Appeals"
+                android:text="Manage Profile"
                 android:textColor="@color/light_blue"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 android:textStyle="bold"/>
+
         </androidx.cardview.widget.CardView>
     </GridLayout>
 
     <!-- Logout Button -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

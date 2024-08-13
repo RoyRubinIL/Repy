@@ -1,56 +1,48 @@
 package com.example.repy.Views;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.repy.Models.Address;
 import com.example.repy.Models.City;
 import com.example.repy.Models.Country;
-import com.example.repy.Models.CountryCurrencyResponse;
-import com.example.repy.Models.CountryFlagResponse;
-import com.example.repy.Models.CountryResponse;
-import com.example.repy.Network.ApiClient;
-import com.example.repy.Network.ApiService;
-import com.example.repy.Network.CountryRequest;
+import com.example.repy.Models.Ticket;
+import com.example.repy.Models.TicketType;
 import com.example.repy.R;
+import com.example.repy.Utilities.ApiData;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class TicketActivity extends AppCompatActivity {
 
     private static final String TAG = "TicketActivity";
 
-    private TextInputEditText dateOfIssueEditText, carNumberEditText, causeEditText;
-    private MaterialTextView mirrorPlate;
+    private TextInputEditText dateOfIssueEditText, ticketIdEditText, carNumberEditText, causeEditText, amountEditText, streetEditText, streetNumberEditText;
+    private MaterialTextView mirrorPlate, currencyTextView;
     private Spinner countrySpinner, citySpinner;
-    private TextView countryFlagTextView, currencyTextView;
-    private ApiService apiService;
-    private List<Country> countryList;
-    private List<String> cityList;
+    private TextView countryFlagTextView;
+    private MaterialButton submitButton;
+    private TicketType ticketType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,21 +59,57 @@ public class TicketActivity extends AppCompatActivity {
         );
         setContentView(R.layout.activity_ticket);
 
+        initializeViews();
+
+        ticketType = (TicketType) getIntent().getSerializableExtra("ticketType");
+        ApiData apiData = new ApiData();
+        apiData.setupCountrySpinner(this, countrySpinner, citySpinner, countryFlagTextView);
+
+        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position > 0) {
+                    citySpinner.setEnabled(true);
+                    String selectedCountry = countrySpinner.getSelectedItem().toString();
+                    apiData.loadCities(selectedCountry, citySpinner);
+                    apiData.loadCountryFlag(selectedCountry, countryFlagTextView);
+                    apiData.loadCurrency(TicketActivity.this, selectedCountry, currencyTextView);
+                } else {
+                    citySpinner.setEnabled(false);
+                    apiData.setupCitySpinner(TicketActivity.this, new ArrayList<>(), citySpinner);
+                    currencyTextView.setText(""); // Clear the currency when no country is selected
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                citySpinner.setEnabled(false);
+                apiData.setupCitySpinner(TicketActivity.this, new ArrayList<>(), citySpinner);
+                currencyTextView.setText(""); // Clear the currency when nothing is selected
+            }
+        });
+
+        dateOfIssueEditText.setOnClickListener(v -> showDatePickerDialog());
+        setupCarNumberEditText();
+        setupCauseEditText();
+
+        submitButton.setOnClickListener(v -> createTicket());
+    }
+
+    private void initializeViews() {
         dateOfIssueEditText = findViewById(R.id.date_of_issue);
+        ticketIdEditText = findViewById(R.id.ticket_id);
         carNumberEditText = findViewById(R.id.car_number);
         causeEditText = findViewById(R.id.multiLineTextInputEditText);
+        amountEditText = findViewById(R.id.amount);
+        streetEditText = findViewById(R.id.ticket_address_street);
+        streetNumberEditText = findViewById(R.id.ticket_address_street_number);
         mirrorPlate = findViewById(R.id.car_num_mirror);
         countrySpinner = findViewById(R.id.country_spinner);
         citySpinner = findViewById(R.id.city_spinner);
         currencyTextView = findViewById(R.id.currency_text);
         countryFlagTextView = findViewById(R.id.country_flag_text);
-
-        apiService = ApiClient.getClient().create(ApiService.class);
-
-        dateOfIssueEditText.setOnClickListener(v -> showDatePickerDialog());
-        setupCountrySpinner();
-        setupCarNumberEditText();
-        setupCauseEditText();
+        submitButton = findViewById(R.id.submit_button);
     }
 
     private void showDatePickerDialog() {
@@ -120,8 +148,7 @@ public class TicketActivity extends AppCompatActivity {
                 if (!carNumber.matches("[A-Z0-9-]*")) {
                     carNumberEditText.setError("Invalid car number format. Only uppercase letters, numbers, and '-' are allowed.");
                 }
-                else
-                    mirrorPlate.setText(carNumber);
+                mirrorPlate.setText(carNumber);
             }
 
             @Override
@@ -133,159 +160,38 @@ public class TicketActivity extends AppCompatActivity {
 
     private void setupCauseEditText() {
         causeEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(256)});
-        causeEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int length = s.length();
-                causeEditText.setHint(String.format("Cause (%d/256)", length));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
     }
 
-    private void setupCountrySpinner() {
-        List<String> countryNames = new ArrayList<>();
-        countryNames.add("Select Country");
+    private void createTicket() {
+        String date = dateOfIssueEditText.getText().toString();
+        String id = ticketIdEditText.getText().toString();
+        String countryName = countrySpinner.getSelectedItem().toString();
+        String cityName = citySpinner.getSelectedItem().toString();
+        String streetAddress = streetEditText.getText().toString();
+        String streetNumStr = streetNumberEditText.getText().toString();
+        int streetNum = Integer.parseInt(streetNumStr);
+        String carNum = carNumberEditText.getText().toString();
+        String ticketCause = causeEditText.getText().toString();
+        double ticketAmount = Double.parseDouble(amountEditText.getText().toString());
+        String ticketCurrency = currencyTextView.getText().toString();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countryNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        countrySpinner.setAdapter(adapter);
+        Country country = new Country();
+        country.setName(countryName);
 
-        loadCountries(adapter);
+        City city = new City();
+        city.setName(cityName);
+
+        Address address = new Address(country, city, streetAddress, streetNum);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Ticket newTicket = new Ticket(null,dateFormat, carNum, id, ticketCause, address, ticketAmount, ticketCurrency, ticketType);
+
+        moveToAppealActivity(newTicket);
     }
 
-    private void loadCountries(ArrayAdapter<String> adapter) {
-        apiService.getCountries().enqueue(new Callback<CountryResponse>() {
-            @Override
-            public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    countryList = response.body().getCountries();
-                    for (Country country : countryList) {
-                        adapter.add(country.getName());
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Failed to load countries: " + response.message());
-                    Toast.makeText(TicketActivity.this, "Failed to load countries: " + response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CountryResponse> call, Throwable t) {
-                Log.e(TAG, "Error: " + t.getMessage());
-                Toast.makeText(TicketActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    citySpinner.setEnabled(true);
-                    loadCities(countrySpinner.getSelectedItem().toString());
-                    loadCurrency(countrySpinner.getSelectedItem().toString());
-                    loadCountryFlag(countrySpinner.getSelectedItem().toString());
-                } else {
-                    citySpinner.setEnabled(false);
-                    setupCitySpinner(new ArrayList<>());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                citySpinner.setEnabled(false);
-                setupCitySpinner(new ArrayList<>());
-            }
-        });
-    }
-
-    private void loadCities(String countryName) {
-        for (Country country : countryList) {
-            if (country.getName().equals(countryName)) {
-                cityList = country.getCities();
-                setupCitySpinner(cityList);
-                break;
-            }
-        }
-    }
-
-    private void setupCitySpinner(List<String> cityList) {
-        List<String> cityNames = new ArrayList<>();
-        cityNames.add("Select City");
-        cityNames.addAll(cityList);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cityNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        citySpinner.setAdapter(adapter);
-    }
-
-    private void loadCurrency(String countryName) {
-        String iso2 = null;
-        for (Country country : countryList) {
-            if (country.getName().equals(countryName)) {
-                iso2 = country.getIso2();
-                break;
-            }
-        }
-        if (iso2 != null) {
-            apiService.getCountryCurrency(new CountryRequest(iso2)).enqueue(new Callback<CountryCurrencyResponse>() {
-                @Override
-                public void onResponse(Call<CountryCurrencyResponse> call, Response<CountryCurrencyResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        CountryCurrencyResponse.CurrencyData currencyData = response.body().getData();
-                        if (currencyData != null) {
-                            String currency = currencyData.getCurrency();
-                            currencyTextView.setText(currency);
-                        } else {
-                            Log.e(TAG, "No currency data found for " + countryName);
-                            Toast.makeText(TicketActivity.this, "No currency data found for " + countryName, Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Log.e(TAG, "Failed to load currency: " + response.message());
-                        Toast.makeText(TicketActivity.this, "Failed to load currency: " + response.message(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<CountryCurrencyResponse> call, Throwable t) {
-                    Log.e(TAG, "Error: " + t.getMessage());
-                    Toast.makeText(TicketActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
-    private void loadCountryFlag(String countryName) {
-        apiService.getCountryFlag(countryName).enqueue(new Callback<CountryFlagResponse>() {
-            @Override
-            public void onResponse(Call<CountryFlagResponse> call, Response<CountryFlagResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<CountryFlagResponse.CountryFlagData> flagDataList = response.body().getData();
-                    for (CountryFlagResponse.CountryFlagData flagData : flagDataList) {
-                        if (flagData.getName().equalsIgnoreCase(countryName)) {
-                            String unicodeFlag = flagData.getUnicodeFlag();
-                            Log.d(TAG, "Unicode flag for " + countryName + ": " + unicodeFlag);
-                            countryFlagTextView.setText(unicodeFlag);
-                            return;
-                        }
-                    }
-                    Log.e(TAG, "No flag data found for " + countryName);
-                    Toast.makeText(TicketActivity.this, "No flag data found for " + countryName, Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(TAG, "Failed to load country flag: " + response.message());
-                    Toast.makeText(TicketActivity.this, "Failed to load country flag: " + response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CountryFlagResponse> call, Throwable t) {
-                Log.e(TAG, "Error: " + t.getMessage());
-                Toast.makeText(TicketActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void moveToAppealActivity(Ticket newTicket){
+        Intent intent = new Intent(TicketActivity.this, AppealActivity.class);
+        startActivity(intent);
     }
 }

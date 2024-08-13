@@ -5,15 +5,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,26 +16,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.repy.Models.Address;
-import com.example.repy.Models.City;
-import com.example.repy.Models.Country;
-import com.example.repy.Models.CountryResponse;
 import com.example.repy.Models.User;
-import com.example.repy.Network.ApiClient;
-import com.example.repy.Network.ApiService;
-import com.example.repy.Models.CountryFlagResponse;
 import com.example.repy.R;
+import com.example.repy.Utilities.ApiData;
+import com.example.repy.Utilities.DataManager;
+import com.example.repy.Utilities.UserManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -49,20 +33,17 @@ public class SignupActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     private Spinner countrySpinner, citySpinner;
-    private EditText passwordEditText, signUpEmail, signUpAddressStreetNum, signUpAddressStreet, signUpId, signUpName;
-    private ImageButton showPasswordButton;
+    private TextInputEditText passwordEditText, signUpEmail, signUpAddressStreetNum, signUpAddressStreet, signUpId, signUpName;
     private MaterialButton signUpButton, addProfileImage;
     private TextView loginRedirectText;
     private TextView countryFlagTextView;
-    private ApiService apiService;
-    private boolean isPasswordVisible = false;
     private Address userAddress;
     private User newUser;
-    private FirebaseDatabase database;
-    private DatabaseReference reference;
-
-    private List<Country> countryList = new ArrayList<>();
-    private List<City> cityList = new ArrayList<>();
+    private ShapeableImageView profile_IMG_avatar;
+    private String profileImage = "";
+    private ApiData apiData;
+    private UserManager userManager;
+    private DataManager dataManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +62,11 @@ public class SignupActivity extends AppCompatActivity {
 
         initializeViews();
 
-        apiService = ApiClient.getClient().create(ApiService.class);
+        apiData = new ApiData();
+        userManager = new UserManager();
+        dataManager = DataManager.getInstance();
+        apiData.setupCountrySpinner(this, countrySpinner, citySpinner, countryFlagTextView);
 
-        setupCountrySpinner();
-
-        showPasswordButton.setOnClickListener(v -> togglePasswordVisibility());
         signUpButton.setOnClickListener(v -> createUser());
         loginRedirectText.setOnClickListener(v -> redirectToLogin());
         addProfileImage.setOnClickListener(v -> openGallery());
@@ -95,7 +76,6 @@ public class SignupActivity extends AppCompatActivity {
         countrySpinner = findViewById(R.id.country_spinner);
         citySpinner = findViewById(R.id.city_spinner);
         passwordEditText = findViewById(R.id.sign_up_password);
-        showPasswordButton = findViewById(R.id.show_password_button);
         signUpButton = findViewById(R.id.sign_up_button);
         loginRedirectText = findViewById(R.id.loginRedirectText);
         addProfileImage = findViewById(R.id.add_profile_image);
@@ -105,23 +85,13 @@ public class SignupActivity extends AppCompatActivity {
         signUpAddressStreet = findViewById(R.id.sign_up_address_street);
         signUpId = findViewById(R.id.sign_up_id);
         signUpName = findViewById(R.id.sign_up_name);
-    }
-
-    private void togglePasswordVisibility() {
-        if (isPasswordVisible) {
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            showPasswordButton.setImageResource(R.drawable.ic_show_pass);
-        } else {
-            passwordEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-            showPasswordButton.setImageResource(R.drawable.ic_hide_pass);
-        }
-        passwordEditText.setSelection(passwordEditText.getText().length());
-        isPasswordVisible = !isPasswordVisible;
+        profile_IMG_avatar = findViewById(R.id.profile_IMG_avatar);
     }
 
     private void redirectToLogin() {
         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void openGallery() {
@@ -138,232 +108,105 @@ public class SignupActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                ShapeableImageView profileImageView = findViewById(R.id.profile_IMG_avatar);
-                profileImageView.setImageBitmap(bitmap);
+                profile_IMG_avatar.setImageBitmap(bitmap);
+                profileImage = imageUri.toString(); // Store the URI string for later use
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void setupCountrySpinner() {
-        List<String> countryNames = new ArrayList<>();
-        countryNames.add("Select Country");
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, countryNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        countrySpinner.setAdapter(adapter);
-
-        loadCountries(adapter);
-    }
-
-    private void loadCountries(ArrayAdapter<String> adapter) {
-        apiService.getCountries().enqueue(new Callback<CountryResponse>() {
-            @Override
-            public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    countryList = response.body().getCountries();
-                    for (Country country : countryList) {
-                        adapter.add(country.getName());
-                    }
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "Failed to load countries: " + response.message());
-                    Toast.makeText(SignupActivity.this, "Failed to load countries: " + response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CountryResponse> call, Throwable t) {
-                Log.e(TAG, "Error: " + t.getMessage());
-                Toast.makeText(SignupActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0) {
-                    citySpinner.setEnabled(true);
-                    loadCities(countrySpinner.getSelectedItem().toString());
-                    loadCountryFlag(countrySpinner.getSelectedItem().toString());
-                } else {
-                    citySpinner.setEnabled(false);
-                    setupCitySpinner(new ArrayList<>());
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                citySpinner.setEnabled(false);
-                setupCitySpinner(new ArrayList<>());
-            }
-        });
-    }
-
-    private void loadCities(String countryName) {
-        for (Country country : countryList) {
-            if (country.getName().equals(countryName)) {
-                cityList = new ArrayList<>();
-                for (String cityName : country.getCities()) {
-                    City city = new City();
-                    city.setName(cityName);
-                    cityList.add(city);
-                }
-                setupCitySpinner(cityList);
-                break;
-            }
-        }
-    }
-
-    private void loadCountryFlag(String countryName) {
-        apiService.getCountryFlag(countryName).enqueue(new Callback<CountryFlagResponse>() {
-            @Override
-            public void onResponse(Call<CountryFlagResponse> call, Response<CountryFlagResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    List<CountryFlagResponse.CountryFlagData> flagDataList = response.body().getData();
-                    for (CountryFlagResponse.CountryFlagData flagData : flagDataList) {
-                        if (flagData.getName().equalsIgnoreCase(countryName)) {
-                            String unicodeFlag = flagData.getUnicodeFlag();
-                            Log.d(TAG, "Unicode flag for " + countryName + ": " + unicodeFlag);
-                            countryFlagTextView.setText(unicodeFlag);
-                            return;
-                        }
-                    }
-                    Log.e(TAG, "No flag data found for " + countryName);
-                    Toast.makeText(SignupActivity.this, "No flag data found for " + countryName, Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.e(TAG, "Failed to load country flag: " + response.message());
-                    Toast.makeText(SignupActivity.this, "Failed to load country flag: " + response.message(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CountryFlagResponse> call, Throwable t) {
-                Log.e(TAG, "Error: " + t.getMessage());
-                Toast.makeText(SignupActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void setupCitySpinner(List<City> cityList) {
-        List<String> cityNames = new ArrayList<>();
-        cityNames.add("Select City");
-        for (City city : cityList) {
-            cityNames.add(city.getName());
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cityNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        citySpinner.setAdapter(adapter);
-    }
-
     private void createUser() {
-        try {
-            String userID = signUpId.getText().toString().trim();
-            String email = signUpEmail.getText().toString().trim();
-            String password = passwordEditText.getText().toString().trim();
-            String name = signUpName.getText().toString().trim();
-            String streetNumStr = signUpAddressStreetNum.getText().toString().trim();
-            String street = signUpAddressStreet.getText().toString().trim();
-            String countryName = countrySpinner.getSelectedItem().toString();
-            String cityName = citySpinner.getSelectedItem().toString();
+        String userID = signUpId.getText().toString().trim();
+        String email = signUpEmail.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+        String name = signUpName.getText().toString().trim();
+        String streetNumStr = signUpAddressStreetNum.getText().toString().trim();
+        String street = signUpAddressStreet.getText().toString().trim();
+        String countryName = countrySpinner.getSelectedItem().toString();
+        String cityName = citySpinner.getSelectedItem().toString();
 
-            boolean isValid = true;
+        boolean isValid = validateInput(userID, email, password, name, streetNumStr, street, countryName, cityName);
+        if (!isValid) return;
 
-            if (userID.isEmpty()) {
-                signUpId.setError("ID is required");
-                isValid = false;
+        userAddress = new Address(apiData.getCountry(countryName), apiData.getCity(countryName, cityName), street, Integer.parseInt(streetNumStr));
+        newUser = new User(null, userID, name, userAddress, email, password, profileImage);
+
+        userManager.createUser(email, password, this, new UserManager.OnUserCreationListener() {
+            @Override
+            public void onUserCreated(String uid) {
+                newUser.setUid(uid);  // Set the UID to the new user object
+                dataManager.storeUserData(newUser, uid, res -> {
+                    if (res) {
+                        Toast.makeText(SignupActivity.this, "User data saved successfully!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SignupActivity.this, MenuActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(SignupActivity.this, "Failed to save user data.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
-            if (email.isEmpty()) {
-                signUpEmail.setError("Email is required");
-                isValid = false;
+            @Override
+            public void onFailure(Exception exception) {
+                Toast.makeText(SignupActivity.this, "Sign up failed: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
+        });
+    }
 
-            if (password.isEmpty()) {
-                passwordEditText.setError("Password is required");
-                isValid = false;
-            }
+    private boolean validateInput(String userID, String email, String password, String name, String streetNumStr, String street, String countryName, String cityName) {
+        boolean isValid = true;
 
-            if (name.isEmpty()) {
-                signUpName.setError("Name is required");
-                isValid = false;
-            }
-
-            int streetNum = 0;
-            if (streetNumStr.isEmpty()) {
-                signUpAddressStreetNum.setError("Street number is required");
-                isValid = false;
-            } else {
-                try {
-                    streetNum = Integer.parseInt(streetNumStr);
-                } catch (NumberFormatException e) {
-                    signUpAddressStreetNum.setError("Invalid street number");
-                    isValid = false;
-                }
-            }
-
-            if (street.isEmpty()) {
-                signUpAddressStreet.setError("Street is required");
-                isValid = false;
-            }
-
-            if ("Select Country".equals(countryName)) {
-                TextView errorText = (TextView) countrySpinner.getSelectedView();
-                errorText.setError("Country is required");
-                isValid = false;
-            }
-
-            if ("Select City".equals(cityName)) {
-                TextView errorText = (TextView) citySpinner.getSelectedView();
-                errorText.setError("City is required");
-                isValid = false;
-            }
-
-            if (!isValid) {
-                return;
-            }
-
-            Country selectedCountry = null;
-            for (Country country : countryList) {
-                if (country.getName().equals(countryName)) {
-                    selectedCountry = country;
-                    break;
-                }
-            }
-
-            City selectedCity = null;
-            for (City city : cityList) {
-                if (city.getName().equals(cityName)) {
-                    selectedCity = city;
-                    break;
-                }
-            }
-
-            if (selectedCountry == null || selectedCity == null) {
-                throw new Exception("Invalid country or city selection");
-            }
-
-            userAddress = new Address(selectedCountry, selectedCity, street, streetNum);
-            newUser = new User(userID, name, userAddress, email, password);
-
-            database = FirebaseDatabase.getInstance();
-            reference = database.getReference("users");
-            reference.child(String.valueOf(newUser.getId())).setValue(newUser);
-
-            Toast.makeText(this, "User created successfully!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-            startActivity(intent);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().contains("Password")) {
-                passwordEditText.setError(e.getMessage());
-            } else {
-                Log.e(TAG, "Error creating user: " + e.getMessage());
-                Toast.makeText(this, "Error creating user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error creating user: " + e.getMessage());
-            Toast.makeText(this, "Error creating user: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        if (userID.isEmpty()) {
+            signUpId.setError("ID is required");
+            isValid = false;
         }
+
+        if (email.isEmpty()) {
+            signUpEmail.setError("Email is required");
+            isValid = false;
+        }
+
+        if (password.isEmpty()) {
+            passwordEditText.setError("Password is required");
+            isValid = false;
+        }
+
+        if (name.isEmpty()) {
+            signUpName.setError("Name is required");
+            isValid = false;
+        }
+
+        if (streetNumStr.isEmpty()) {
+            signUpAddressStreetNum.setError("Street number is required");
+            isValid = false;
+        } else {
+            try {
+                Integer.parseInt(streetNumStr);
+            } catch (NumberFormatException e) {
+                signUpAddressStreetNum.setError("Invalid street number");
+                isValid = false;
+            }
+        }
+
+        if (street.isEmpty()) {
+            signUpAddressStreet.setError("Street is required");
+            isValid = false;
+        }
+
+        if ("Select Country".equals(countryName)) {
+            TextView errorText = (TextView) countrySpinner.getSelectedView();
+            errorText.setError("Country is required");
+            isValid = false;
+        }
+
+        if ("Select City".equals(cityName)) {
+            TextView errorText = (TextView) citySpinner.getSelectedView();
+            errorText.setError("City is required");
+            isValid = false;
+        }
+
+        return isValid;
     }
 }

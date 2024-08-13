@@ -13,6 +13,10 @@ public class Country {
     @SerializedName("iso2")
     private String iso2;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

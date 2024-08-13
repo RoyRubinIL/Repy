@@ -1,8 +1,11 @@
 package com.example.repy.Models;
 
 import java.text.DateFormat;
+import java.io.Serializable;
+
 
 public class Ticket {
+    private String uid;
     private String ticketId;
     private DateFormat date;
     private Address address;
@@ -12,15 +15,25 @@ public class Ticket {
     private String currency;
     private TicketType ticketType;
 
-    public Ticket(DateFormat date, String carNum, String reportId, String cause, Address address, double amount, String currency, TicketType ticketType) {
-        this.address = address;
+    public Ticket(String uid, DateFormat date, String carNum, String ticketId, String cause, Address address, double amount, String currency, TicketType ticketType) {
+        this.uid = uid;
         this.date = date;
         this.carNum = carNum;
-        this.ticketId = reportId;
+        this.ticketId = ticketId;
         this.cause = cause;
         this.amount = amount;
         this.currency = currency;
         this.ticketType = ticketType;
+
+        if (address == null || address.getCountry() == null) {
+            throw new IllegalArgumentException("Country must be provided for all tickets.");
+        }
+
+        if (ticketType == TicketType.MUNICIPALITY && (address.getStreet() == null || address.getStreetNum() <= 0)) {
+            throw new IllegalArgumentException("Municipality tickets must have a street and street number.");
+        }
+
+        this.address = address;
     }
 
     public Ticket() {}
@@ -30,15 +43,23 @@ public class Ticket {
     }
 
     public void setAddress(Address address) {
+        if (address == null || address.getCountry() == null) {
+            throw new IllegalArgumentException("Country must be provided for all tickets.");
+        }
+
+        if (ticketType == TicketType.MUNICIPALITY && (address.getStreet() == null || address.getStreetNum() <= 0)) {
+            throw new IllegalArgumentException("Municipality tickets must have a street and street number.");
+        }
+
         this.address = address;
     }
 
-    public DateFormat getDate() {
-        return date;
+    public String getUid() {
+        return uid;
     }
 
-    public void setDate(DateFormat date) {
-        this.date = date;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getCarNum() {
@@ -49,12 +70,20 @@ public class Ticket {
         this.carNum = carNum;
     }
 
-    public String getReportId() {
+    public String getTicketId() {
         return ticketId;
     }
 
-    public void setReportId(String reportId) {
-        this.ticketId = reportId;
+    public void setTicketId(String ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public DateFormat getDate() {
+        return date;
+    }
+
+    public void setDate(DateFormat date) {
+        this.date = date;
     }
 
     public String getCause() {
@@ -79,14 +108,6 @@ public class Ticket {
 
     public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public String getTicketId() {
-        return ticketId;
-    }
-
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
     }
 
     public TicketType getTicketType() {

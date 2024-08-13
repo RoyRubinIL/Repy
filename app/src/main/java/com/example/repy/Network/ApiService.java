@@ -25,7 +25,7 @@ public interface ApiService {
 
     @Headers({
             "Content-Type: application/json",
-            "Authorization: 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"
+            "Authorization: "
     })
     @POST("v1/chat/completions")
     Call<JsonObject> getChatCompletion(@Body JsonObject body);

@@ -26,7 +26,7 @@ public interface ApiService {
 
     @Headers({
             "Content-Type: application/json",
-            "Authorization: Bearer placeholder"
+
     })
     @POST("v1/chat/completions")
     Call<ChatGptResponse> getChatCompletion(@Body ChatGptRequest chatGptRequest);

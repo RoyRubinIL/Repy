@@ -1,6 +1,7 @@
 package com.example.repy.Models;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ public class User implements Serializable {
     private String email;
     private String password;
     private String profileImage;
+
 
     public User() {
     }
@@ -92,7 +94,7 @@ public class User implements Serializable {
         }
     }
 
-    private String validateEmail(String email) {
+    public String validateEmail(String email) {
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         Pattern pattern = Pattern.compile(emailPattern);
         Matcher matcher = pattern.matcher(email);
@@ -102,7 +104,7 @@ public class User implements Serializable {
         return null;
     }
 
-    private String validatePassword(String password) {
+    public String validatePassword(String password) {
         if (password.length() < 8) {
             return "Password must be at least 8 characters long";
         }
@@ -118,11 +120,12 @@ public class User implements Serializable {
         return null;
     }
 
+
     @Override
     public String toString() {
-        return "User{" +
+        return "Appealer: " +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
+                ", full name='" + name + '\'' +
                 ", address=" + address +
                 ", email='" + email + '\'' +
                 '}';

@@ -16,7 +16,7 @@
         android:clipToPadding="false"
         android:clipChildren="false">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -40,7 +40,7 @@
                 android:layout_marginHorizontal="10dp">
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/ticket_text"
+                    android:id="@+id/ticket_LBL_ticket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -50,16 +50,16 @@
                     android:textStyle="bold"
                     android:textColor="@color/light_blue"/>
 
-                <LinearLayout
-                    android:id="@+id/lintic"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ticket_LAY_ticketInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="8dp"
-                    android:layout_below="@+id/ticket_text">
+                    android:layout_below="@+id/ticket_LBL_ticket">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/date_of_issue"
+                        android:id="@+id/ticket_LBL_dateOfIssue"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -70,7 +70,7 @@
                         android:layout_marginTop="8dp"/>
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/ticket_id"
+                        android:id="@+id/ticket_LBL_ticketId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -78,18 +78,18 @@
                         android:inputType="text"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"/>
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <LinearLayout
-                    android:id="@+id/country_city_LAY"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ticket_LAY_countryCity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/lintic"
+                    android:layout_below="@id/ticket_LAY_ticketInfo"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
                     <Spinner
-                        android:id="@+id/country_spinner"
+                        android:id="@+id/ticket_LST_countrySpinner"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
                         android:layout_weight="1"
@@ -98,30 +98,30 @@
                         android:background="@color/white"/>
 
                     <TextView
-                        android:id="@+id/country_flag_text"
+                        android:id="@+id/ticket_LBL_countryFlag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:contentDescription="Country Flag"
                         android:textSize="24sp"
                         android:text=""/>
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <Spinner
-                    android:id="@+id/city_spinner"
+                    android:id="@+id/ticket_LST_citySpinner"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:padding="12dp"
                     android:spinnerMode="dropdown"
-                    android:layout_below="@id/country_city_LAY"
+                    android:layout_below="@id/ticket_LAY_countryCity"
                     android:layout_marginTop="10dp"
                     android:background="@color/white"/>
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ticket_LBL_street"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@id/city_spinner"
-                    android:id="@+id/ticket_address_street"
+                    android:layout_below="@id/ticket_LST_citySpinner"
                     android:layout_marginTop="20dp"
                     android:padding="12dp"
                     android:hint="Street"
@@ -131,10 +131,10 @@
                     android:background="@color/white"/>
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ticket_LBL_streetNumber"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_below="@+id/ticket_address_street"
-                    android:id="@+id/ticket_address_street_number"
+                    android:layout_below="@+id/ticket_LBL_street"
                     android:layout_marginTop="20dp"
                     android:padding="12dp"
                     android:hint="Street Number"
@@ -145,21 +145,21 @@
                     android:background="@color/white"/>
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/car_number"
+                    android:id="@+id/ticket_LBL_carNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Car Number"
                     android:inputType="text"
-                    android:layout_below="@id/ticket_address_street_number"
+                    android:layout_below="@id/ticket_LBL_streetNumber"
                     android:layout_marginBottom="8dp"/>
                 <RelativeLayout
-                    android:id="@+id/car_LAY"
+                    android:id="@+id/ticket_LAY_car"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/car_number">
+                    android:layout_below="@id/ticket_LBL_carNumber">
 
-                    <ImageView
-                        android:id="@+id/car_image"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/ticket_IMG_carImage"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginBottom="8dp"
@@ -167,7 +167,7 @@
                         android:src="@drawable/img_car"/>
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/car_num_mirror"
+                        android:id="@+id/ticket_LBL_carNumberMirror"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text=""
@@ -180,15 +180,15 @@
                 </RelativeLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cause"
+                    android:id="@+id/ticket_LAY_cause"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/car_LAY"
+                    android:layout_below="@+id/ticket_LAY_car"
                     android:layout_marginBottom="8dp"
                     android:hint="Cause">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/multiLineTextInputEditText"
+                        android:id="@+id/ticket_LBL_causeText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"
@@ -200,16 +200,16 @@
                         android:background="@android:color/white" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:id="@+id/cash"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/ticket_LAY_cash"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/cause"
+                    android:layout_below="@id/ticket_LAY_cause"
                     android:layout_marginBottom="8dp"
                     android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/amount"
+                        android:id="@+id/ticket_LBL_amount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -217,20 +217,20 @@
                         android:inputType="numberDecimal"/>
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/currency_text"
+                        android:id="@+id/ticket_LBL_currency"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:padding="12dp"
                         android:textSize="16sp"
                         android:textColor="@android:color/black"/>
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/submit_button"
+                    android:id="@+id/ticket_BTN_submit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/cash"
+                    android:layout_below="@+id/ticket_LAY_cash"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     android:text="Submit Ticket"
@@ -240,6 +240,6 @@
                     android:elevation="4dp"/>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 </RelativeLayout>

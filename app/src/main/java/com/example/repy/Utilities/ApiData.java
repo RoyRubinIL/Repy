@@ -11,13 +11,12 @@ import android.widget.Toast;
 
 import com.example.repy.Models.City;
 import com.example.repy.Models.Country;
-import com.example.repy.Models.CountryCurrencyResponse;
-import com.example.repy.Models.CountryFlagResponse;
-import com.example.repy.Models.CountryResponse;
+import com.example.repy.APIResponses.CountryCurrencyResponse;
+import com.example.repy.APIResponses.CountryFlagResponse;
+import com.example.repy.APIResponses.CountryResponse;
 import com.example.repy.Network.ApiClient;
-import com.example.repy.Network.ApiService;
-import com.example.repy.Network.CountryRequest;
-import com.example.repy.R;
+import com.example.repy.Interfaces.ApiService;
+import com.example.repy.APIRequests.CountryRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,6 +180,92 @@ public class ApiData {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         citySpinner.setAdapter(adapter);
     }
+
+    public void setupCountrySpinnerWithSelection(Context context, Spinner countrySpinner, Spinner citySpinner, TextView countryFlagTextView, String selectedCountry, Runnable callback) {
+        List<String> countryNames = new ArrayList<>();
+        countryNames.add("Select Country");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, countryNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        countrySpinner.setAdapter(adapter);
+
+        loadCountriesWithSelection(context, adapter, countrySpinner, citySpinner, countryFlagTextView, selectedCountry, callback);
+    }
+
+    private void loadCountriesWithSelection(Context context, ArrayAdapter<String> adapter, Spinner countrySpinner, Spinner citySpinner, TextView countryFlagTextView, String selectedCountry, Runnable callback) {
+        apiService.getCountries().enqueue(new Callback<CountryResponse>() {
+            @Override
+            public void onResponse(Call<CountryResponse> call, Response<CountryResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    countryList = response.body().getCountries();
+                    for (Country country : countryList) {
+                        adapter.add(country.getName());
+                    }
+                    adapter.notifyDataSetChanged();
+
+                    // Set the selected country if provided
+                    if (selectedCountry != null && !selectedCountry.isEmpty()) {
+                        setSpinnerSelection(countrySpinner, selectedCountry);
+                        // Load the flag for the selected country
+                        loadCountryFlag(selectedCountry, countryFlagTextView);
+                    }
+
+                    // Invoke the callback to indicate that countries have been loaded
+                    if (callback != null) {
+                        callback.run();
+                    }
+                } else {
+                    Log.e("ApiData", "Failed to load countries: " + response.message());
+                    Toast.makeText(context, "Failed to load countries: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CountryResponse> call, Throwable t) {
+                Log.e("ApiData", "Error: " + t.getMessage());
+                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void loadCitiesWithSelection(String countryName, Spinner citySpinner, String selectedCity, Runnable callback) {
+        for (Country country : countryList) {
+            if (country.getName().equals(countryName)) {
+                List<City> cityList = new ArrayList<>();
+                for (String cityName : country.getCities()) {
+                    City city = new City();
+                    city.setName(cityName);
+                    cityList.add(city);
+                }
+                setupCitySpinner(citySpinner.getContext(), cityList, citySpinner);
+
+                // Set the selected city if provided
+                if (selectedCity != null && !selectedCity.isEmpty()) {
+                    setSpinnerSelection(citySpinner, selectedCity);
+                }
+
+                // Invoke the callback to indicate that cities have been loaded
+                if (callback != null) {
+                    callback.run();
+                }
+                break;
+            }
+        }
+    }
+
+    private void setSpinnerSelection(Spinner spinner, String value) {
+        ArrayAdapter adapter = (ArrayAdapter) spinner.getAdapter();
+        if (adapter != null) {
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (adapter.getItem(i).equals(value)) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
+
 
     public Country getCountry(String countryName) {
         for (Country country : countryList) {

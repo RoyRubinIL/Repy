@@ -44,7 +44,7 @@ public class UserManager {
                 });
     }
 
-    public String getCurrentUserId() {
+    public String getCurrentUserUid() {
         if (mAuth.getCurrentUser() != null) {
             return mAuth.getCurrentUser().getUid();
         }

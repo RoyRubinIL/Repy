@@ -3,14 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/monitor_LAY_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/light_blue"
     tools:context=".Views.MonitorActivity">
 
     <RelativeLayout
-        android:id="@+id/title"
+        android:id="@+id/monitor_LAY_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -20,7 +20,7 @@
 
         <!-- Return Icon -->
         <ImageButton
-            android:id="@+id/button_return_monitor"
+            android:id="@+id/monitor_BTN_return"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -31,6 +31,7 @@
 
         <!-- Title Text -->
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/monitor_LBL_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -41,12 +42,11 @@
 
     </RelativeLayout>
 
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_active_appels"
+        android:id="@+id/monitor_RV_activeAppeals"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/monitor_LAY_title"
         tools:listitem="@layout/horizontal_appeal_item"/>
 
 </RelativeLayout>

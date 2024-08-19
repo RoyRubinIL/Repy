@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.repy.Models.User;
 import com.example.repy.R;
 import com.example.repy.Utilities.DataManager;
@@ -17,19 +18,41 @@ import com.example.repy.Utilities.UserManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseUser;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MenuActivity extends AppCompatActivity {
 
     private TextView generateAppeal, monitorAppeals, appealsHistory, manageProfile, profileName;
     private MaterialButton logOutButton;
     private UserManager userManager;
     private DataManager dataManager;
-    private ImageView profileAvatar;
+    private CircleImageView profileAvatar;
     private FirebaseUser currentUser;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupFullScreenMode();
+        setContentView(R.layout.activity_menu);
+
+        initializeViews();
+        userManager = new UserManager();
+        dataManager = DataManager.getInstance();
+        currentUser = userManager.getCurrentUser();
+
+        if (currentUser != null) {
+            setName();
+            setProfileImage();
+        }
+
+        generateAppeal.setOnClickListener(v -> moveToGenerateAppealActivity());
+        monitorAppeals.setOnClickListener(v -> moveToMonitorActivity());
+        appealsHistory.setOnClickListener(v -> moveToAppealsHistoryActivity());
+        manageProfile.setOnClickListener(v -> moveToProfileActivity());
+        logOutButton.setOnClickListener(v -> moveToStartActivity());
+    }
+
+    private void setupFullScreenMode() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(
@@ -40,46 +63,58 @@ public class MenuActivity extends AppCompatActivity {
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
-        setContentView(R.layout.activity_menu);
-
-        initializeViews();
-        userManager = new UserManager();
-        currentUser = userManager.getCurrentUser();
-        dataManager = DataManager.getInstance();
-        setName();
-        loadProfileImage();
-        generateAppeal.setOnClickListener(v -> moveToGenerateAppealActivity());
-        monitorAppeals.setOnClickListener(v -> moveToMonitorActivity());
-        appealsHistory.setOnClickListener(v -> moveToAppealsHistoryActivity());
-        manageProfile.setOnClickListener(v -> moveToProfileActivity());
-        logOutButton.setOnClickListener(v -> moveToStartActivity());
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = userManager.getCurrentUser();
+        if (currentUser == null) {
+            // No user is signed in, redirect to login screen
+            moveToStartActivity();
+        } else {
+            setName();
+            setProfileImage();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setProfileImage();
+    }
+
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     private void initializeViews() {
-        generateAppeal = findViewById(R.id.txt_generate_appeal);
-        monitorAppeals = findViewById(R.id.txt_monitor_appeals);
-        appealsHistory = findViewById(R.id.txt_appeals_history);
-        manageProfile = findViewById(R.id.txt_manage_profile);
-        logOutButton = findViewById(R.id.btn_logout);
-        profileAvatar = findViewById(R.id.profile_IMG_avatar);
-        profileName = findViewById(R.id.hello_user);
+        generateAppeal = findViewById(R.id.menu_LBL_generateAppeal);
+        monitorAppeals = findViewById(R.id.menu_LBL_monitorAppeals);
+        appealsHistory = findViewById(R.id.menu_LBL_appealsHistory);
+        manageProfile = findViewById(R.id.menu_LBL_manageProfile);
+        logOutButton = findViewById(R.id.menu_BTN_logout);
+        profileAvatar = findViewById(R.id.menu_IMG_profileAvatar);
+        profileName = findViewById(R.id.menu_LBL_helloUser);
     }
 
-    private void loadProfileImage(){
+    private void setProfileImage() {
         if (currentUser != null) {
             String uid = currentUser.getUid();
             dataManager.getUserData(uid, new DataManager.CallBack<User>() {
                 @Override
                 public void res(User user) {
-                    String profileImageUrl = user.getProfileImage();
-                    if (profileImageUrl != null && !profileImageUrl.isEmpty()) {
-                        dataManager.loadProfileImage(MenuActivity.this, profileImageUrl, profileAvatar);
+                    if (user != null && user.getProfileImage() != null) {
+                        Glide.with(MenuActivity.this)
+                                .load(user.getProfileImage())
+                                .placeholder(R.drawable.img_default_profile_image)
+                                .centerCrop()
+                                .into(profileAvatar);
+                    } else {
+                        profileAvatar.setImageResource(R.drawable.img_default_profile_image);
                     }
                 }
             });
@@ -103,7 +138,6 @@ public class MenuActivity extends AppCompatActivity {
             profileName.setText("Hello User");
         }
     }
-
 
     private void moveToGenerateAppealActivity() {
         Intent intent = new Intent(MenuActivity.this, GenerateAppealActivity.class);

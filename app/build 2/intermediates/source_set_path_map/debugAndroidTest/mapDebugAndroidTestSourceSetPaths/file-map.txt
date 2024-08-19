@@ -1,0 +1,5 @@
+com.example.repy.test.app-jetified-core-1.6.1-0 /Users/rubinroy/.gradle/caches/transforms-4/9cfc05934dace30d31f92826d6638dd1/transformed/jetified-core-1.6.1/res
+com.example.repy.test.app-androidTest-1 /Users/rubinroy/Desktop/Repy/app/build/generated/res/resValues/androidTest/debug
+com.example.repy.test.app-mergeDebugAndroidTestResources-2 /Users/rubinroy/Desktop/Repy/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.repy.test.app-mergeDebugAndroidTestResources-3 /Users/rubinroy/Desktop/Repy/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.repy.test.app-debugAndroidTest-4 /Users/rubinroy/Desktop/Repy/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

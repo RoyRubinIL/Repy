@@ -1,0 +1,143 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_blue"
+    tools:context=".Views.AppealActivity">
+
+    <!-- Return Icon -->
+    <ImageButton
+        android:id="@+id/ic_return"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Return"
+        android:src="@drawable/ic_return" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_below="@id/ic_return">  <!-- Positioned below the return icon -->
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginHorizontal="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/appeal_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Appeal"
+                    android:textSize="28sp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/light_blue"/>
+
+                <LinearLayout
+                    android:id="@+id/details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@+id/appeal_text">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/date_of_issue_appeal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Date of Issue"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginTop="8dp"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/ticket_id_appeal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Ticket ID"
+                        android:inputType="none"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/details"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Appeal reason">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/multiLineTextInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:lines="10"
+                        android:gravity="top|start"
+                        android:minLines="10"
+                        android:scrollbars="vertical"
+                        android:padding="10dp"
+                        android:background="@android:color/white" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <RelativeLayout
+            android:id="@+id/generate_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lintic">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/light_blue"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/img_manwithcard"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/generate_txt"
+                android:layout_width="180dp"
+                android:layout_height="150dp"
+                android:text="Generate Appeal"
+                android:layout_marginTop="80dp"
+                android:layout_marginStart="165dp"
+                android:gravity="center"
+                android:padding="12dp"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

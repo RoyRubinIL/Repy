@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/historyAppeal_LAY_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue"
@@ -10,7 +10,7 @@
 
     <!-- RelativeLayout for Return Icon and Title -->
     <RelativeLayout
-        android:id="@+id/title"
+        android:id="@+id/historyAppeal_LAY_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -20,7 +20,7 @@
 
         <!-- Return Icon -->
         <ImageButton
-            android:id="@+id/ic_return"
+            android:id="@+id/historyAppeal_BTN_return"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -31,6 +31,7 @@
 
         <!-- Title Text -->
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/historyAppeal_LBL_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -42,10 +43,10 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_history_appeals"
+        android:id="@+id/historyAppeal_RV_appeals"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/title"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/historyAppeal_LAY_title"
         tools:listitem="@layout/horizontal_appeal_item"/>
 
 </RelativeLayout>

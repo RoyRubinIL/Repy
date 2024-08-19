@@ -3,33 +3,27 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/menu_LAY_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue"
     tools:context=".Views.MenuActivity">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/profile_IMG_avatar"
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/menu_IMG_profileAvatar"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:background="@color/white"
-        android:scaleType="fitCenter"
-        app:shapeAppearanceOverlay="@style/circleImageView"
-        app:srcCompat="@drawable/img_default_profile_image"
-        app:strokeColor="@color/deep_blue"
-        app:strokeWidth="4dp"
-        android:padding="8dp"/>
+        android:layout_marginTop="20dp"
+        android:src="@drawable/img_default_profile_image" />
 
 
     <TextView
-        android:id="@+id/hello_user"
+        android:id="@+id/menu_LBL_helloUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_IMG_avatar"
+        android:layout_below="@id/menu_IMG_profileAvatar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Hello, [User Name]"
@@ -38,10 +32,10 @@
         android:textColor="@color/white" />
 
     <TextView
-        android:id="@+id/cancel_report_prompt"
+        android:id="@+id/menu_LBL_cancelReportPrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/hello_user"
+        android:layout_below="@id/menu_LBL_helloUser"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Ready to cancel your ticket?"
@@ -51,10 +45,10 @@
 
     <!-- Buttons Section -->
     <GridLayout
-        android:id="@+id/button_grid"
+        android:id="@+id/menu_LAY_buttonGrid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/cancel_report_prompt"
+        android:layout_below="@id/menu_LBL_cancelReportPrompt"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:columnCount="2"
@@ -62,7 +56,7 @@
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_generate_appeal"
+            android:id="@+id/menu_CARD_generateAppeal"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_margin="10dp"
@@ -71,7 +65,7 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/txt_generate_appeal"
+                android:id="@+id/menu_LBL_generateAppeal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -84,7 +78,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_manage_profile"
+            android:id="@+id/menu_CARD_monitorAppeals"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_margin="10dp"
@@ -93,7 +87,7 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/txt_monitor_appeals"
+                android:id="@+id/menu_LBL_monitorAppeals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -108,7 +102,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_appeals_history"
+            android:id="@+id/menu_CARD_appealsHistory"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_margin="10dp"
@@ -117,7 +111,7 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/txt_appeals_history"
+                android:id="@+id/menu_LBL_appealsHistory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -130,7 +124,7 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/card_monitor_appeals"
+            android:id="@+id/menu_CARD_manageProfile"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_margin="10dp"
@@ -139,7 +133,7 @@
             app:cardElevation="4dp">
 
             <TextView
-                android:id="@+id/txt_manage_profile"
+                android:id="@+id/menu_LBL_manageProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -155,7 +149,7 @@
 
     <!-- Logout Button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_logout"
+        android:id="@+id/menu_BTN_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

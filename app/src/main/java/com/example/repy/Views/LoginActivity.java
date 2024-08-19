@@ -25,6 +25,17 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupFullScreenMode();
+        setContentView(R.layout.activity_login);
+
+        initializeViews();
+        userManager = new UserManager();
+
+        logInButton.setOnClickListener(v -> login());
+        signUpRedirectText.setOnClickListener(v -> redirectToSignup());
+    }
+
+    private void setupFullScreenMode() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(
@@ -35,21 +46,15 @@ public class LoginActivity extends AppCompatActivity {
                         View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
-        setContentView(R.layout.activity_login);
-
-        initializeViews();
-        userManager = new UserManager();
-
-        logInButton.setOnClickListener(v -> login());
-        signUpRedirectText.setOnClickListener(v -> redirectToSignup());
     }
 
     private void initializeViews() {
-        logInButton = findViewById(R.id.logIn_button);
-        signUpRedirectText = findViewById(R.id.signUpRedirectText);
+        logInButton = findViewById(R.id.login_BTN_logIn);
+        signUpRedirectText = findViewById(R.id.login_LBL_signUpRedirect);
         emailField = findViewById(R.id.login_EDT_email);
         passwordField = findViewById(R.id.login_EDT_password);
     }
+
 
     private void login() {
         String email = emailField.getText().toString().trim();
@@ -75,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onLoginFailure(Exception e) {
-                Toast.makeText(LoginActivity.this, "Login failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                passwordField.setError(e.getMessage());
             }
         });
     }

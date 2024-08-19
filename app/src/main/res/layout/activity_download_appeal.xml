@@ -1,35 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/downAppeal_LAY_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/light_blue"
-    tools:context=".Views.DownloadAppeal">
-
-    <!-- LinearLayout for Return Icon -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp">
-
-        <!-- Return Icon -->
-        <ImageButton
-            android:id="@+id/ic_return"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Return"
-            android:src="@drawable/ic_return" />
-
-    </LinearLayout>
+    tools:context=".Views.DownloadAppealActivity">
 
     <!-- MaterialTextView displaying the appeal message -->
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/text_appeal_ready"
+        android:id="@+id/downAppeal_LBL_appealReady"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -40,34 +20,36 @@
         android:textStyle="bold"/>
 
     <!-- ImageView for the img_sadcop image -->
-    <ImageView
-        android:id="@+id/img_sadcop"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/downAppeal_IMG_sadcop"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_below="@id/text_appeal_ready"
+        android:layout_below="@id/downAppeal_LBL_appealReady"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/img_sadcop"
         android:contentDescription="sadcop_image" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/downAppeal_LAY_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/img_sadcop"
+        android:layout_below="@id/downAppeal_IMG_sadcop"
         android:orientation="vertical"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:gravity="center_horizontal">
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/downAppeal_CARD_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="50dp"
             android:layout_gravity="center"
             app:cardCornerRadius="16dp"
             app:cardElevation="8dp">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -75,32 +57,32 @@
                 android:background="@color/white">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/view_appeal_btn"
+                    android:id="@+id/downAppeal_BTN_viewAppeal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="View Appeal"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    app:backgroundTint="@color/light_blue" />
+                    app:backgroundTint="@color/light_blue"
+                    android:visibility="gone"/>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/manual_typing"
+                    android:id="@+id/downAppeal_BTN_downloadAppeal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
                     android:layout_gravity="center"
                     android:text="Download Appeal"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:backgroundTint="@color/light_blue" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.cardview.widget.CardView>
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <!-- Button at the Bottom Center for Returning to Main Menu -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/return_to_main_menu_btn"
+        android:id="@+id/downAppeal_BTN_returnToMainMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

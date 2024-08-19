@@ -2,12 +2,13 @@ package com.example.repy.Models;
 
 import java.text.DateFormat;
 import java.io.Serializable;
+import java.util.Date;
 
 
 public class Ticket {
     private String uid;
     private String ticketId;
-    private DateFormat date;
+    private Date date;
     private Address address;
     private String carNum;
     private String cause;
@@ -15,7 +16,7 @@ public class Ticket {
     private String currency;
     private TicketType ticketType;
 
-    public Ticket(String uid, DateFormat date, String carNum, String ticketId, String cause, Address address, double amount, String currency, TicketType ticketType) {
+    public Ticket(String uid, Date date, String carNum, String ticketId, String cause, Address address, double amount, String currency, TicketType ticketType) {
         this.uid = uid;
         this.date = date;
         this.carNum = carNum;
@@ -78,11 +79,11 @@ public class Ticket {
         this.ticketId = ticketId;
     }
 
-    public DateFormat getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(DateFormat date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -125,7 +126,7 @@ public class Ticket {
                 ", ticketType=" + ticketType +
                 ", date=" + date +
                 ", address=" + address +
-                ", carNum='" + carNum + '\'' +
+                ", car number='" + carNum + '\'' +
                 ", cause='" + cause + '\'' +
                 ", amount=" + amount +
                 ", currency='" + currency + '\'' +

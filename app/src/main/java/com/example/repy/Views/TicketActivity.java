@@ -23,6 +23,8 @@ import com.example.repy.Models.Ticket;
 import com.example.repy.Models.TicketType;
 import com.example.repy.R;
 import com.example.repy.Utilities.ApiData;
+import com.example.repy.Utilities.DataManager;
+import com.example.repy.Utilities.UserManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
@@ -31,7 +33,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Date;
 
 public class TicketActivity extends AppCompatActivity {
 
@@ -43,23 +45,19 @@ public class TicketActivity extends AppCompatActivity {
     private TextView countryFlagTextView;
     private MaterialButton submitButton;
     private TicketType ticketType;
+    private DataManager dataManager;
+    private UserManager userManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        );
+        setupFullScreenMode();
         setContentView(R.layout.activity_ticket);
 
         initializeViews();
+
+        dataManager = DataManager.getInstance();
+        userManager = new UserManager();
 
         ticketType = (TicketType) getIntent().getSerializableExtra("ticketType");
         ApiData apiData = new ApiData();
@@ -96,20 +94,33 @@ public class TicketActivity extends AppCompatActivity {
         submitButton.setOnClickListener(v -> createTicket());
     }
 
+    private void setupFullScreenMode() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
+    }
+
     private void initializeViews() {
-        dateOfIssueEditText = findViewById(R.id.date_of_issue);
-        ticketIdEditText = findViewById(R.id.ticket_id);
-        carNumberEditText = findViewById(R.id.car_number);
-        causeEditText = findViewById(R.id.multiLineTextInputEditText);
-        amountEditText = findViewById(R.id.amount);
-        streetEditText = findViewById(R.id.ticket_address_street);
-        streetNumberEditText = findViewById(R.id.ticket_address_street_number);
-        mirrorPlate = findViewById(R.id.car_num_mirror);
-        countrySpinner = findViewById(R.id.country_spinner);
-        citySpinner = findViewById(R.id.city_spinner);
-        currencyTextView = findViewById(R.id.currency_text);
-        countryFlagTextView = findViewById(R.id.country_flag_text);
-        submitButton = findViewById(R.id.submit_button);
+        dateOfIssueEditText = findViewById(R.id.ticket_LBL_dateOfIssue);
+        ticketIdEditText = findViewById(R.id.ticket_LBL_ticketId);
+        carNumberEditText = findViewById(R.id.ticket_LBL_carNumber);
+        causeEditText = findViewById(R.id.ticket_LBL_causeText);
+        amountEditText = findViewById(R.id.ticket_LBL_amount);
+        streetEditText = findViewById(R.id.ticket_LBL_street);
+        streetNumberEditText = findViewById(R.id.ticket_LBL_streetNumber);
+        mirrorPlate = findViewById(R.id.ticket_LBL_carNumberMirror);
+        countrySpinner = findViewById(R.id.ticket_LST_countrySpinner);
+        citySpinner = findViewById(R.id.ticket_LST_citySpinner);
+        currencyTextView = findViewById(R.id.ticket_LBL_currency);
+        countryFlagTextView = findViewById(R.id.ticket_LBL_countryFlag);
+        submitButton = findViewById(R.id.ticket_BTN_submit);
     }
 
     private void showDatePickerDialog() {
@@ -162,18 +173,91 @@ public class TicketActivity extends AppCompatActivity {
         causeEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(256)});
     }
 
+    private boolean validateFields(TicketType ticketType, String dateString, String id, String countryName, String cityName,
+                                   String streetAddress, String streetNumStr, String carNum, String ticketCause,
+                                   String amountStr, String ticketCurrency) {
+
+        if (dateString.isEmpty()) {
+            System.err.println("Error: Date of issue is empty.");
+            return false;
+        }
+
+        if (id.isEmpty()) {
+            System.err.println("Error: Ticket ID is empty.");
+            return false;
+        }
+
+        if (countryName.isEmpty()) {
+            System.err.println("Error: Country is not selected.");
+            return false;
+        }
+
+        if (cityName.isEmpty()) {
+            System.err.println("Error: City is not selected.");
+            return false;
+        }
+
+        if (carNum.isEmpty()) {
+            System.err.println("Error: Car number is empty.");
+            return false;
+        }
+
+        if (ticketCause.isEmpty()) {
+            System.err.println("Error: Cause of the ticket is empty.");
+            return false;
+        }
+
+        if (amountStr.isEmpty()) {
+            System.err.println("Error: Ticket amount is empty.");
+            return false;
+        }
+
+        if (ticketCurrency.isEmpty()) {
+            System.err.println("Error: Ticket currency is not selected.");
+            return false;
+        }
+
+        if (ticketType == TicketType.MUNICIPALITY) {
+            if (streetAddress.isEmpty()) {
+                System.err.println("Error: Street address is empty.");
+                return false;
+            }
+
+            if (streetNumStr.isEmpty()) {
+                System.err.println("Error: Street number is empty.");
+                return false;
+            }
+
+            try {
+                Integer.parseInt(streetNumStr);
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Street number is not a valid number.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+
     private void createTicket() {
-        String date = dateOfIssueEditText.getText().toString();
+        String dateString = dateOfIssueEditText.getText().toString();
         String id = ticketIdEditText.getText().toString();
         String countryName = countrySpinner.getSelectedItem().toString();
         String cityName = citySpinner.getSelectedItem().toString();
         String streetAddress = streetEditText.getText().toString();
         String streetNumStr = streetNumberEditText.getText().toString();
-        int streetNum = Integer.parseInt(streetNumStr);
         String carNum = carNumberEditText.getText().toString();
         String ticketCause = causeEditText.getText().toString();
-        double ticketAmount = Double.parseDouble(amountEditText.getText().toString());
+        String amountStr = amountEditText.getText().toString();
         String ticketCurrency = currencyTextView.getText().toString();
+
+        if (!validateFields(ticketType, dateString, id, countryName, cityName, streetAddress, streetNumStr, carNum, ticketCause, amountStr, ticketCurrency)) {
+            return;
+        }
+        int streetNum = Integer.parseInt(streetNumStr);
+        double ticketAmount = Double.parseDouble(amountStr);
 
         Country country = new Country();
         country.setName(countryName);
@@ -183,15 +267,25 @@ public class TicketActivity extends AppCompatActivity {
 
         Address address = new Address(country, city, streetAddress, streetNum);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date;
+        try {
+            date = dateFormat.parse(dateString);
+        } catch (Exception e) {
+            Toast.makeText(this, "Invalid date format", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Ticket newTicket = new Ticket(null,date, carNum, id, ticketCause, address, ticketAmount, ticketCurrency, ticketType);
 
-        Ticket newTicket = new Ticket(null,dateFormat, carNum, id, ticketCause, address, ticketAmount, ticketCurrency, ticketType);
-
+        String ticketUid = dataManager.saveNewTicket(userManager.getCurrentUserUid(), newTicket);
+        newTicket.setUid(ticketUid);
         moveToAppealActivity(newTicket);
     }
 
     private void moveToAppealActivity(Ticket newTicket){
         Intent intent = new Intent(TicketActivity.this, AppealActivity.class);
+        intent.putExtra("newTicketID", newTicket.getTicketId());
+        intent.putExtra("newTicketUid", newTicket.getUid());
         startActivity(intent);
     }
 }

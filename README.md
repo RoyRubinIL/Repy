@@ -59,7 +59,7 @@ Repy is an Android application that allows users to generate and manage appeals 
    - Build and run the project from Android Studio.
   
 ## Video Demo
-[VideoDemo](https://drive.google.com/file/d/13EIp6wvhriUstBs9tqd6bjwwr-deTYz5/view?usp=sharing)
+[VideoDemo](https://drive.google.com/file/d/1tH6E8N-2OzH1pq0UsZPZCo1iCs-Wsdaf/view?usp=sharing)
 
 ## Credits
 

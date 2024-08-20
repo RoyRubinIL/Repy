@@ -164,14 +164,36 @@ public class ProfileActivity extends AppCompatActivity {
     private void confirmChanges(Uri imageUri) {
         try {
             if (validateProfileInputs()) {
+                String newPassword = passwordField.getText().toString().trim();
                 updateUserDetails();
-                saveUserData();
-                uploadProfileImage(imageUri);
+
+                // Update Firebase Auth password
+                userManager.updateUserPassword(newPassword, new UserManager.OnPasswordUpdateListener() {
+                    @Override
+                    public void onPasswordUpdateSuccess() {
+                        saveUserData();
+
+                        if (imageUri != null) {
+                            uploadProfileImage(imageUri);
+                        } else {
+                            Log.d(TAG, "No new profile image to upload.");
+                        }
+
+                        Log.d(TAG, "Password updated successfully!");
+                    }
+
+                    @Override
+                    public void onPasswordUpdateFailure(Exception exception) {
+                        Log.e(TAG, "Failed to update password: " + exception.getMessage());
+                    }
+                });
             }
         } catch (IllegalArgumentException e) {
             Log.e(TAG, "Validation failed: " + e.getMessage());
         }
     }
+
+
 
     public void setProfileImage() {
         String imageUrl = currentUser.getProfileImage();
@@ -382,6 +404,7 @@ public class ProfileActivity extends AppCompatActivity {
         currentUser.setName(nameField.getText().toString().trim());
         currentUser.setEmail(emailField.getText().toString().trim());
         currentUser.setPassword(passwordField.getText().toString().trim());
+
 
         Address address = currentUser.getAddress();
         address.setStreet(streetField.getText().toString().trim());

@@ -51,13 +51,29 @@ public class UserManager {
         return null;
     }
 
-    public FirebaseUser getCurrentUser(){
-        return mAuth.getCurrentUser();
+    public void updateUserPassword(String newPassword, OnPasswordUpdateListener listener) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            user.updatePassword(newPassword).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    listener.onPasswordUpdateSuccess();
+                } else {
+                    listener.onPasswordUpdateFailure(task.getException());
+                }
+            });
+        } else {
+            listener.onPasswordUpdateFailure(new Exception("User not logged in"));
+        }
     }
 
-    public interface OnUserDataSavedListener {
-        void onSuccess();
-        void onFailure(Exception exception);
+    public interface OnPasswordUpdateListener {
+        void onPasswordUpdateSuccess();
+        void onPasswordUpdateFailure(Exception exception);
+    }
+
+
+    public FirebaseUser getCurrentUser(){
+        return mAuth.getCurrentUser();
     }
 
     public interface OnLoginListener {

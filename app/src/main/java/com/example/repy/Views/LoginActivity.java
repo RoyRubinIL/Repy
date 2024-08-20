@@ -31,8 +31,18 @@ public class LoginActivity extends AppCompatActivity {
         initializeViews();
         userManager = new UserManager();
 
+        checkIfUserAlreadyLogIn();
+
         logInButton.setOnClickListener(v -> login());
         signUpRedirectText.setOnClickListener(v -> redirectToSignup());
+    }
+
+    private void checkIfUserAlreadyLogIn() {
+        if (userManager.isUserLoggedIn()) {
+            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     private void setupFullScreenMode() {
